@@ -1,44 +1,33 @@
-//Main file
-
-#include <iostream>
 #include <raylib.h>
+#include "boid.h"
 
-using namespace std;
 
 int main() {
 
-    Color Dark_Green = Color{ 20, 160, 133, 255 };
+    Color backgroundColor = BLACK; 
+    Color boidColor = RAYWHITE;
 
-    const int screenWidth = 800;
-    const int screenHeight = 600;
-    int ball_x = 100;
-    int ball_y = 100;
-    int ball_speed_x = 5;
-    int ball_speed_y = 5;
-    int ball_radius = 15;
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
 
-    cout << "Hello World" << endl;
+    int centerX = screenWidth / 2; 
+    int centerY = screenHeight / 2;  
+    
+    Boid* boidptr = new Boid(centerX, centerY, { 0.0f, 0.0f }); 
 
-    InitWindow(screenWidth, screenHeight, "My first RAYLIB program!");
+    InitWindow(screenWidth, screenHeight, "Boids - By Ellmaer Ranjber");
     SetTargetFPS(60);
+    HideCursor();
 
     while (WindowShouldClose() == false) {
+
         BeginDrawing();
-        ClearBackground(Dark_Green);
-        ball_x += ball_speed_x;
-        ball_y += ball_speed_y;
 
-        if (ball_x + ball_radius >= screenWidth || ball_x - ball_radius <= 0)
-        {
-            ball_speed_x *= -1;
-        }
+        ClearBackground(backgroundColor);
+        
+        boidptr->DrawBoid();
+         
 
-        if (ball_y + ball_radius >= screenHeight || ball_y - ball_radius <= 0)
-        {
-            ball_speed_y *= -1;
-        }
-
-        DrawCircle(ball_x, ball_y, ball_radius, WHITE);
         EndDrawing();
     }
 
