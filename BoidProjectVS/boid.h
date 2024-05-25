@@ -4,8 +4,8 @@
 #include "functions.h" // Include user-defined functions
 
 // Constants defining boid properties
-const float BOID_SIZE = 5.0f; // Size of the boid
-const float SCREEN_MARGIN = BOID_SIZE * 10.0f; // Margin from screen edges
+const float BOID_SIZE = 2.5f; // Size of the boid
+const float SCREEN_MARGIN = BOID_SIZE * 25.0f; // Margin from screen edges
 const Color BOID_COLOR = RAYWHITE; // Color of the boid
 const Color PERIMETER_COLOR = GREEN; // Color of the perimeter
 const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
@@ -64,8 +64,8 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
 // Method to update the boid's position and velocity
 void Boid::Update() {
     // Constants defining turning behavior near boundaries and random steering
-    const float boundaryTurnFactor = 0.9f; // Turning speed near boundaries
-    const float randomTurnFactor = 0.3f;   // Random steering strength
+    const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
+    const float randomTurnFactor = 0.5f;   // Random steering strength
     bool randomTurn = true; // Flag to enable random steering
 
     // Gradually adjust velocity when near boundaries
