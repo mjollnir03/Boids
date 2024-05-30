@@ -53,10 +53,24 @@ int main() {
 
         // Loop through all boids in the simulation
         for (int i = 0; i < NUM_BOIDS; i++) {
-            // Apply separation, alignment, and cohesion behaviors to the current boid
+
+            for (int j = 0; j < NUM_BOIDS; j++) { //this method will be faster, O(N^2) is better than previous method
+                //calculate the distance that the boid[i] is from the boid[j]
+                
+                //accumalate necessary variables and etc.
+
+                //check if boid is in "Visual Range"
+
+
+            }
+
+            // Old code to mark the special visual ranges per type of method call
+            /*
             boids[i]->ApplySeparation(boids, NUM_BOIDS, AVOID_FACTOR, VISUAL_RANGE - 60);
             boids[i]->ApplyAlignment(boids, NUM_BOIDS, ALIGN_FACTOR, VISUAL_RANGE - 20);
             boids[i]->ApplyCohesion(boids, NUM_BOIDS, COHESION_FACTOR, VISUAL_RANGE + 20);
+            */
+            
 
             // Update position and velocity of the current boid
             boids[i]->Update();

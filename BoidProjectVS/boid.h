@@ -29,13 +29,13 @@ public:
     void Update();
 
     // Method to apply separation behavior to avoid collisions with nearby boids
-    void ApplySeparation(Boid* boids[], int numBoids, float avoidFactor, int visualRange);
+    void ApplySeparation(float avoidFactor);
 
     // Method to apply alignment behavior to match velocities with nearby boids
-    void ApplyAlignment(Boid* boids[], int numBoids, float alignFactor, int visualRange);
+    void ApplyAlignment(float alignFactor);
 
     // Method to apply cohesion behavior to move towards the center of nearby boids
-    void ApplyCohesion(Boid* boids[], int numBoids, float cohesionFactor, int visualRange);
+    void ApplyCohesion(float cohesionFactor);
 
     // Destructor (if needed)
     ~Boid();
@@ -144,100 +144,18 @@ float Boid::GetYVel() const {
 }
 
 // Method to apply separation behavior to avoid collisions with nearby boids
-void Boid::ApplySeparation(Boid* boids[], int numBoids, float avoidFactor, int visualRange) {
-    float moveX = 0;
-    float moveY = 0;
-
-    // Loop through all boids
-    for (int i = 0; i < numBoids; i++) {
-        if (boids[i] == this) continue; // Skip self
-
-        // Calculate distance between this boid and the current boid
-        float distance = sqrt(pow(this->xpos - boids[i]->GetXPos(), 2) + pow(this->ypos - boids[i]->GetYPos(), 2));
-
-        // Check if the current boid is within the visual range
-        if (distance < visualRange) {
-            // Add avoidance vector to move away from the current boid
-            moveX += this->xpos - boids[i]->GetXPos();
-            moveY += this->ypos - boids[i]->GetYPos();
-        }
-    }
-
-    // Update velocity based on avoidance vector
-    this->xvel += moveX * avoidFactor;
-    this->yvel += moveY * avoidFactor;
+void Boid::ApplySeparation(float avoidFactor) {
+    
 }
 
 // Method to apply alignment behavior to match velocities with nearby boids
-void Boid::ApplyAlignment(Boid* boids[], int numBoids, float alignFactor, int visualRange) {
-    float avgXVel = 0;
-    float avgYVel = 0;
-    int numNeighbors = 0;
-
-    // Loop through all boids
-    for (int i = 0; i < numBoids; i++) {
-        if (boids[i] == this) continue; // Skip self
-
-        // Calculate distance between this boid and the current boid
-        float distance = sqrt(pow(this->xpos - boids[i]->GetXPos(), 2) + pow(this->ypos - boids[i]->GetYPos(), 2));
-
-        // Check if the current boid is within the visual range
-        if (distance < visualRange) {
-            // Add velocity of the current boid to calculate average velocity
-            avgXVel += boids[i]->GetXVel();
-            avgYVel += boids[i]->GetYVel();
-            numNeighbors++;
-        }
-    }
-
-    // If there are neighboring boids
-    if (numNeighbors > 0) {
-        // Calculate average velocity
-        avgXVel /= numNeighbors;
-        avgYVel /= numNeighbors;
-
-        // Adjust velocity towards the average velocity
-        this->xvel += (avgXVel - this->xvel) * alignFactor;
-        this->yvel += (avgYVel - this->yvel) * alignFactor;
-    }
+void Boid::ApplyAlignment(float alignFactor) {
+    
 }
 
 // Method to apply cohesion behavior to move towards the center of nearby boids
-void Boid::ApplyCohesion(Boid* boids[], int numBoids, float cohesionFactor, int visualRange) {
-    float avgXPos = 0;
-    float avgYPos = 0;
-    int numNeighbors = 0;
-
-    // Loop through all boids
-    for (int i = 0; i < numBoids; i++) {
-        if (boids[i] == this) continue; // Skip self
-
-        // Calculate distance between this boid and the current boid
-        float distance = sqrt(pow(this->xpos - boids[i]->GetXPos(), 2) + pow(this->ypos - boids[i]->GetYPos(), 2));
-
-        // Check if the current boid is within the visual range
-        if (distance < visualRange) {
-            // Add position of the current boid to calculate average position
-            avgXPos += boids[i]->GetXPos();
-            avgYPos += boids[i]->GetYPos();
-            numNeighbors++;
-        }
-    }
-
-    // If there are neighboring boids
-    if (numNeighbors > 0) {
-        // Calculate average position
-        avgXPos /= numNeighbors;
-        avgYPos /= numNeighbors;
-
-        // Calculate movement towards the average position
-        float moveX = avgXPos - this->xpos;
-        float moveY = avgYPos - this->ypos;
-
-        // Adjust velocity towards the average position
-        this->xvel += moveX * cohesionFactor;
-        this->yvel += moveY * cohesionFactor;
-    }
+void Boid::ApplyCohesion(float cohesionFactor) {
+    
 }
 
 // Destructor (if needed)
