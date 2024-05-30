@@ -26,6 +26,15 @@ int main() {
     // Array to store pointers to boids
     Boid* boids[NUM_BOIDS];
 
+    //Variabels to use in the main for loops 
+    float moveX = 0; //used in Seperation()
+    float moveY = 0; //used in Seperation()
+    float avgXVel = 0; //used in Alignment()
+    float avgYVel = 0; //used in Alignment()
+    float avgXPos = 0; //used in Cohesion()
+    float avgYPos = 0; //used in Cohesion()
+    int numNeighbors = 0; //used in Alignment() and Cohesion()
+
     // Initialize boids with random positions and velocities
     for (int i = 0; i < NUM_BOIDS; i++) {
         // Generate random initial positions
