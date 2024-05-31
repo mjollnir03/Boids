@@ -62,14 +62,36 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
 
 // WORK IN PROGRESS
 void Boid::Update() { //follow grid idea
-
+    //reminder to myself, the velocities will only change
+    //based on the grid position
+    //no more natural velocity increase at the end of the function
 }
 
+void DrawGrid() {
+    for (int i = 0; i < 5; i++) {
+        DrawCircle(0 * 480, i * 270,  15, GREEN);
+    }
+    for (int i = 0; i < 5; i++) {
+        DrawCircle(1 * 480, i * 270,  15, GREEN);
+    }
+    for (int i = 0; i < 5; i++) {
+        DrawCircle(2 * 480, i * 270,  15, GREEN);
+    }
+    for (int i = 0; i < 5; i++) {
+        DrawCircle(3 * 480, i * 270,  15, GREEN);
+    }
+    for (int i = 0; i < 5; i++) {
+        DrawCircle(4 * 480, i * 270,  15, GREEN);
+    }
+    
+}
 
 // Method to draw the boid
 void Boid::DrawBoid() {
     // Draw the boid as a circle at its current position
     DrawCircle(this->xpos, this->ypos, BOID_SIZE, BOID_COLOR);
+    DrawGrid();
+    
 }
 
 // Setter methods to update the boid's position and velocity
