@@ -67,21 +67,13 @@ void Boid::Update() { //follow grid idea
     //no more natural velocity increase at the end of the function
 }
 
-void DrawGrid() {
-    for (int i = 0; i < 5; i++) {
-        DrawCircle(0 * 480, i * 270,  15, GREEN);
-    }
-    for (int i = 0; i < 5; i++) {
-        DrawCircle(1 * 480, i * 270,  15, GREEN);
-    }
-    for (int i = 0; i < 5; i++) {
-        DrawCircle(2 * 480, i * 270,  15, GREEN);
-    }
-    for (int i = 0; i < 5; i++) {
-        DrawCircle(3 * 480, i * 270,  15, GREEN);
-    }
-    for (int i = 0; i < 5; i++) {
-        DrawCircle(4 * 480, i * 270,  15, GREEN);
+void DrawGrid() { // temporary function just to help visualize the point of the grid system I am creating
+    for (int x = 0; x < 5; x++) {
+        for (int y = 0; y < 5; y++) {
+            int centerX = x * 480;
+            int centerY = y * 270;
+            DrawCircle(centerX, centerY, 15, GREEN);
+        }
     }
     
 }
