@@ -5,7 +5,7 @@
 #include "boid.h" // Include user-defined Boid class header file
 #include <iostream>
 
-#define NUM_BOIDS 250 // Define the number of boids in the simulation
+#define NUM_BOIDS 350 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
@@ -91,6 +91,14 @@ int main() {
                     moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
                     moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
                 }
+
+                //check if boid is in "Visual Range"
+                if (distance < VISUAL_RANGE) {
+                    //first update variables for alignment
+                    avgXVel += boids[j]->GetXVel();
+                    avgYVel += boids[j]->GetYVel();
+                    numNeighbors++; 
+                }
                 
 
                 
@@ -100,13 +108,19 @@ int main() {
                 //accumalate necessary variables and etc.
             }
 
+            if (numNeighbors > 0) {
+                avgXVel /= numNeighbors;
+                avgYVel /= numNeighbors;
+            }
+
             // Old code to mark the special visual ranges per type of method call
             /*
             boids[i]->ApplySeparation(boids, NUM_BOIDS, AVOID_FACTOR, VISUAL_RANGE - 60);
             boids[i]->ApplyAlignment(boids, NUM_BOIDS, ALIGN_FACTOR, VISUAL_RANGE - 20);
             boids[i]->ApplyCohesion(boids, NUM_BOIDS, COHESION_FACTOR, VISUAL_RANGE + 20);
             */
-            //boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
+            boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
+            boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
 
             // Update position and velocity of the current boid
             boids[i]->Update();
