@@ -4,8 +4,8 @@
 #include "functions.h" // Include user-defined functions
 
 // Constants defining boid properties
-const float BOID_SIZE = 2.5f; // Size of the boid
-const float SCREEN_MARGIN = BOID_SIZE * 25.0f; // Margin from screen edges
+const float BOID_SIZE = 3.5f; // Size of the boid
+const float SCREEN_MARGIN = BOID_SIZE * 15.0f; // Margin from screen edges
 const Color BOID_COLOR = RAYWHITE; // Color of the boid
 const Color PERIMETER_COLOR = GREEN; // Color of the perimeter
 const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
@@ -35,7 +35,7 @@ public:
     void ApplyAlignment(float alignFactor, float avgXVel, float avgYVel);
 
     // Method to apply cohesion behavior to move towards the center of nearby boids
-    void ApplyCohesion(float cohesionFactor);
+    void ApplyCohesion(float cohesionFactor, float avgXPos, float avgYPos);
 
     // Destructor (if needed)
     ~Boid();
@@ -65,7 +65,7 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
 void Boid::Update() {
     // Constants defining turning behavior near boundaries and random steering
     const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
-    const float randomTurnFactor = 0.9f;   // Random steering strength
+    const float randomTurnFactor = 0.5f;   // Random steering strength
     bool randomTurn = true; // Flag to enable random steering
 
     // Gradually adjust velocity when near boundaries
@@ -87,11 +87,17 @@ void Boid::Update() {
     }
 
     // Randomly adjust velocity to steer left or right
-    if (GetRandomValue(0, 100) < 50 && randomTurn) { // 50% chance to steer left
-        this->xpos += randomTurnFactor; // Move left
+    if (GetRandomValue(0, 100) < 20 && randomTurn) { // 50% chance to steer left
+        this->xvel -= randomTurnFactor; // Adjust x velocity to steer left
     }
-    else if (GetRandomValue(0, 100) > 50 && randomTurn) { // 50% chance to steer right
-        this->ypos -= randomTurnFactor; // Move right
+    else if (GetRandomValue(0, 100) >= 80 && randomTurn) { // 50% chance to steer right
+        this->xvel += randomTurnFactor; // Adjust x velocity to steer right
+    }
+    if (GetRandomValue(0, 100) < 20 && randomTurn) { // 50% chance to steer up
+        this->yvel -= randomTurnFactor; // Adjust y velocity to steer up
+    }
+    else if (GetRandomValue(0, 100) >= 80 && randomTurn) { // 50% chance to steer down
+        this->yvel += randomTurnFactor; // Adjust y velocity to steer down
     }
 
     // Ensure velocities stay within bounds
@@ -99,9 +105,10 @@ void Boid::Update() {
     this->yvel = Clamp(this->yvel, -MAX_VELOCITY, MAX_VELOCITY);
 
     // Update position based on velocity
-    this->xpos += this->xvel;
-    this->ypos += this->yvel;
+    this->xpos += static_cast<int>(this->xvel);
+    this->ypos += static_cast<int>(this->yvel);
 }
+
 
 // Method to draw the boid
 void Boid::DrawBoid() {
@@ -156,8 +163,9 @@ void Boid::ApplyAlignment(float alignFactor, float avgXVel, float avgYVel) {
 }
 
 // Method to apply cohesion behavior to move towards the center of nearby boids
-void Boid::ApplyCohesion(float cohesionFactor) {
-    
+void Boid::ApplyCohesion(float cohesionFactor, float avgXPos, float avgYPos) {
+    this->xvel += (avgXPos - this->xpos) * cohesionFactor;
+    this->yvel += (avgYPos - this->ypos) * cohesionFactor;
 }
 
 // Destructor (if needed)

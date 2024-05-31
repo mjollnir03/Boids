@@ -5,7 +5,7 @@
 #include "boid.h" // Include user-defined Boid class header file
 #include <iostream>
 
-#define NUM_BOIDS 350 // Define the number of boids in the simulation
+#define NUM_BOIDS 750 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
@@ -20,8 +20,8 @@ int main() {
     const int VISUAL_RANGE = 100; // Range within which boids interact with each other
     const int PROTECTED_RANGE = 20;
     const float AVOID_FACTOR = 0.05f; // Factor controlling avoidance behavior
-    const float ALIGN_FACTOR = 0.02f; // Factor controlling alignment behavior
-    const float COHESION_FACTOR = 0.005f; // Factor controlling cohesion behavior
+    const float ALIGN_FACTOR = 0.03f; // Factor controlling alignment behavior
+    const float COHESION_FACTOR = 0.002f; // Factor controlling cohesion behavior
 
     // Seed the random number generator with current time
     srand(static_cast<unsigned>(time(0)));
@@ -69,8 +69,7 @@ int main() {
         ClearBackground(backgroundColor); // Clear the screen with the background color
 
         // Loop through all boids in the simulation
-        for (int i = 0; i < NUM_BOIDS; i++) { //this method will be faster, O(N^2) is better than previous method
-
+        for (int i = 0; i < NUM_BOIDS; i++) {
             moveX = 0; //used in Seperation()
             moveY = 0; //used in Seperation()
             avgXVel = 0; //used in Alignment()
@@ -79,48 +78,40 @@ int main() {
             avgYPos = 0; //used in Cohesion()
             numNeighbors = 0; //used in Alignment() and Cohesion()
 
-            for (int j = 0; j < NUM_BOIDS; j++) { //this method will be faster, O(N^2) is better than previous method
-                //calculate the distance that the boid[i] is from the boid[j]
-                pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
-                pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
-                distance = Vector2Distance(pos1, pos2);
+            for (int j = 0; j < NUM_BOIDS; j++) {
+                if (i != j) { // Ensure a boid does not compare with itself
+                    //calculate the distance that the boid[i] is from the boid[j]
+                    pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
+                    pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
+                    distance = Vector2Distance(pos1, pos2);
 
-                //check if boid is in "Protected Range"
-                if (distance < PROTECTED_RANGE) {
-                    
-                    moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
-                    moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
+                    //check if boid is in "Protected Range"
+                    if (distance < PROTECTED_RANGE) {
+                        moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
+                        moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
+                    }
+
+                    // Calculate for alignment and cohesion
+                    if (distance < VISUAL_RANGE) {
+                        avgXVel += boids[j]->GetXVel();
+                        avgYVel += boids[j]->GetYVel();
+                        avgXPos += boids[j]->GetXPos();
+                        avgYPos += boids[j]->GetYPos();
+                        numNeighbors++;
+                    }
                 }
-
-                //check if boid is in "Visual Range"
-                if (distance < VISUAL_RANGE) {
-                    //first update variables for alignment
-                    avgXVel += boids[j]->GetXVel();
-                    avgYVel += boids[j]->GetYVel();
-                    numNeighbors++; 
-                }
-                
-
-                
-
-                
-
-                //accumalate necessary variables and etc.
             }
 
             if (numNeighbors > 0) {
                 avgXVel /= numNeighbors;
                 avgYVel /= numNeighbors;
+                avgXPos /= numNeighbors;
+                avgYPos /= numNeighbors;
             }
 
-            // Old code to mark the special visual ranges per type of method call
-            /*
-            boids[i]->ApplySeparation(boids, NUM_BOIDS, AVOID_FACTOR, VISUAL_RANGE - 60);
-            boids[i]->ApplyAlignment(boids, NUM_BOIDS, ALIGN_FACTOR, VISUAL_RANGE - 20);
-            boids[i]->ApplyCohesion(boids, NUM_BOIDS, COHESION_FACTOR, VISUAL_RANGE + 20);
-            */
             boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
             boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
+            boids[i]->ApplyCohesion(COHESION_FACTOR, avgXPos, avgYPos);
 
             // Update position and velocity of the current boid
             boids[i]->Update();
