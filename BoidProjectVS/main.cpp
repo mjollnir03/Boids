@@ -5,7 +5,7 @@
 #include "boid.h" // Include user-defined Boid class header file
 #include <iostream>
 
-#define NUM_BOIDS 750 // Define the number of boids in the simulation
+#define NUM_BOIDS 250 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
@@ -76,37 +76,46 @@ int main() {
             avgYVel = 0; //used in Alignment()
             avgXPos = 0; //used in Cohesion()
             avgYPos = 0; //used in Cohesion()
-            numNeighbors = 0; //used in Alignment() and Cohesion()
+            int numAlignmentNeighbors = 0; //used in Alignment()
+            int numCohesionNeighbors = 0; //used in Cohesion()
 
             for (int j = 0; j < NUM_BOIDS; j++) {
                 if (i != j) { // Ensure a boid does not compare with itself
-                    //calculate the distance that the boid[i] is from the boid[j]
+                    // Calculate the distance that the boid[i] is from the boid[j]
                     pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
                     pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
                     distance = Vector2Distance(pos1, pos2);
 
-                    //check if boid is in "Protected Range"
+                    // Check if boid is in "Protected Range"
                     if (distance < PROTECTED_RANGE) {
                         moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
                         moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
                     }
 
-                    // Calculate for alignment and cohesion
-                    if (distance < VISUAL_RANGE) {
+                    // Calculate for alignment
+                    if (distance < (VISUAL_RANGE - 20)) {
                         avgXVel += boids[j]->GetXVel();
                         avgYVel += boids[j]->GetYVel();
+                        numAlignmentNeighbors++;
+                    }
+
+                    // Calculate for cohesion
+                    if (distance < (VISUAL_RANGE + 20)) {
                         avgXPos += boids[j]->GetXPos();
                         avgYPos += boids[j]->GetYPos();
-                        numNeighbors++;
+                        numCohesionNeighbors++;
                     }
                 }
             }
 
-            if (numNeighbors > 0) {
-                avgXVel /= numNeighbors;
-                avgYVel /= numNeighbors;
-                avgXPos /= numNeighbors;
-                avgYPos /= numNeighbors;
+            if (numAlignmentNeighbors > 0) {
+                avgXVel /= numAlignmentNeighbors;
+                avgYVel /= numAlignmentNeighbors;
+            }
+
+            if (numCohesionNeighbors > 0) {
+                avgXPos /= numCohesionNeighbors;
+                avgYPos /= numCohesionNeighbors;
             }
 
             boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
@@ -122,6 +131,7 @@ int main() {
 
         EndDrawing(); // End rendering frame
     }
+
 
     // Clean up memory by deleting dynamically allocated boids
     for (int i = 0; i < NUM_BOIDS; i++) {
