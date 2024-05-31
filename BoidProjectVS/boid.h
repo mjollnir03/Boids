@@ -4,10 +4,9 @@
 #include "functions.h" // Include user-defined functions
 
 // Constants defining boid properties
-const float BOID_SIZE = 2.5f; // Size of the boid
-const float SCREEN_MARGIN = BOID_SIZE * 10.0f; // Margin from screen edges
+const float BOID_SIZE = 3.5f; // Size of the boid
 const Color BOID_COLOR = RAYWHITE; // Color of the boid
-const float MAX_VELOCITY = 6.0f; // Maximum velocity of the boid
+const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
 
 // Class definition for a boid
 class Boid {
@@ -16,6 +15,9 @@ private:
     int ypos; // Current y-position of the boid
     float xvel; // Current x-velocity of the boid
     float yvel; // Current y-velocity of the boid
+    Vector2 GetDirection(); // Returns x and y values to be applied to xvel and yvel
+    void ApplyVelocity();
+    bool CheckBoundaryCollosion();
 
 public:
     // Constructor with parameters for initial position and velocity
@@ -60,23 +62,73 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
     this->yvel = yvel;
 }
 
-// WORK IN PROGRESS
-void Boid::Update() { //follow grid idea
-    //reminder to myself, the velocities will only change
-    //based on the grid position
-    //no more natural velocity increase at the end of the function
+void Boid::ApplyVelocity() {
+    //add some acceleration to the velocities 
+    this->xvel += this->xvel * 0.01f;
+    this->yvel += this->yvel * 0.01f;
+
+    // Ensure velocities stay within bounds
+    this->xvel = Clamp(this->xvel, -MAX_VELOCITY, MAX_VELOCITY);
+    this->yvel = Clamp(this->yvel, -MAX_VELOCITY, MAX_VELOCITY);
+
+    // Update position based on velocity
+    this->xpos += this->xvel;
+    this->ypos += this->yvel;
+
 }
 
-void DrawGrid() { // temporary function just to help visualize the point of the grid system I am creating
-    for (int x = 0; x < 5; x++) {
-        for (int y = 0; y < 5; y++) {
-            int centerX = x * 480;
-            int centerY = y * 270;
-            DrawCircle(centerX, centerY, 15, GREEN);
-        }
-    }
-    
+Vector2 Boid::GetDirection() {
+
+    return { 3.0, 3.0 };
 }
+
+bool Boid::CheckBoundaryCollosion() {
+    // Constants defining turning behavior near boundaries and random steering
+    const float boundaryTurnFactor = 0.3f; // Turning speed near boundaries
+    bool boundryHit = false; 
+
+    // Gradually adjust velocity when near boundaries
+    if (this->xpos < 20) {
+        this->xvel += boundaryTurnFactor; // Turn right
+        boundryHit = true;
+    }
+    else if (this->xpos > GetScreenWidth() - 20) {
+        this->xvel -= boundaryTurnFactor; // Turn left
+        boundryHit = true;
+    }
+    if (this->ypos < 20) {
+        this->yvel += boundaryTurnFactor; // Turn down
+        boundryHit = true;
+    }
+    else if (this->ypos > GetScreenHeight() - 20) {
+        this->yvel -= boundaryTurnFactor; // Turn up
+        boundryHit = true;
+    }
+
+    if (boundryHit) {
+        this->ApplyVelocity();
+    }
+
+    return boundryHit;
+}
+
+
+// WORK IN PROGRESS
+void Boid::Update() { //follow grid idea
+
+    //variables
+
+
+    //check boundry collosion
+    if (this->CheckBoundaryCollosion()) { return; } //base case
+
+    this->ApplyVelocity();
+    
+
+
+
+}
+
 
 // Method to draw the boid
 void Boid::DrawBoid() {
