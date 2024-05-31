@@ -15,3 +15,15 @@ T Clamp(T value, T min, T max) {
         return value; // Return the original value if within the range
     }
 }
+
+
+void DrawGrid() { // temporary function just to help visualize the point of the grid system I am creating
+    for (int x = 0; x < 5; x++) {
+        for (int y = 0; y < 5; y++) {
+            int centerX = x * 480;
+            int centerY = y * 270;
+            DrawCircle(centerX, centerY, 15, GREEN);
+        }
+    }
+
+}
