@@ -60,46 +60,9 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
     this->yvel = yvel;
 }
 
-// Method to update the boid's position and velocity
-void Boid::Update() {
-    // Constants defining turning behavior near boundaries and random steering
-    const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
-    const float randomTurnFactor = 0.5f;   // Random steering strength
-    bool randomTurn = true; // Flag to enable random steering
+// WORK IN PROGRESS
+void Boid::Update() { //follow grid idea
 
-    // Gradually adjust velocity when near boundaries
-    if (this->xpos < SCREEN_MARGIN) {
-        this->xvel += boundaryTurnFactor; // Turn right
-        randomTurn = false; // Disable random steering
-    }
-    else if (this->xpos > GetScreenWidth() - SCREEN_MARGIN) {
-        this->xvel -= boundaryTurnFactor; // Turn left
-        randomTurn = false; // Disable random steering
-    }
-    if (this->ypos < SCREEN_MARGIN) {
-        this->yvel += boundaryTurnFactor; // Turn down
-        randomTurn = false; // Disable random steering
-    }
-    else if (this->ypos > GetScreenHeight() - SCREEN_MARGIN) {
-        this->yvel -= boundaryTurnFactor; // Turn up
-        randomTurn = false; // Disable random steering
-    }
-
-    // Randomly adjust velocity to steer left or right
-    if (GetRandomValue(0, 100) < 50 && randomTurn) { // 50% chance to steer left
-        this->xvel += randomTurnFactor; // Move left
-    }
-    else if (GetRandomValue(0, 100) > 50 && randomTurn) { // 50% chance to steer right
-        this->yvel += randomTurnFactor; // Move right
-    }
-
-    // Ensure velocities stay within bounds
-    this->xvel = Clamp(this->xvel, -MAX_VELOCITY, MAX_VELOCITY);
-    this->yvel = Clamp(this->yvel, -MAX_VELOCITY, MAX_VELOCITY);
-
-    // Update position based on velocity
-    this->xpos += this->xvel;
-    this->ypos += this->yvel;
 }
 
 
