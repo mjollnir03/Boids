@@ -29,7 +29,7 @@ public:
     void Update();
 
     // Method to apply separation behavior to avoid collisions with nearby boids
-    void ApplySeparation(float avoidFactor);
+    void ApplySeparation(float avoidFactor, int moveX, int moveY);
 
     // Method to apply alignment behavior to match velocities with nearby boids
     void ApplyAlignment(float alignFactor);
@@ -144,8 +144,9 @@ float Boid::GetYVel() const {
 }
 
 // Method to apply separation behavior to avoid collisions with nearby boids
-void Boid::ApplySeparation(float avoidFactor) {
-    
+void Boid::ApplySeparation(float avoidFactor, int moveX, int moveY) {
+    this->xvel += moveX * avoidFactor;
+    this->yvel += moveY * avoidFactor;
 }
 
 // Method to apply alignment behavior to match velocities with nearby boids
