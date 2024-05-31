@@ -5,7 +5,7 @@
 #include "boid.h" // Include user-defined Boid class header file
 #include <iostream>
 
-#define NUM_BOIDS 250 // Define the number of boids in the simulation
+#define NUM_BOIDS 350 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
@@ -20,7 +20,7 @@ int main() {
     const int VISUAL_RANGE = 100; // Range within which boids interact with each other
     const int PROTECTED_RANGE = 20;
     const float AVOID_FACTOR = 0.05f; // Factor controlling avoidance behavior
-    const float ALIGN_FACTOR = 0.03f; // Factor controlling alignment behavior
+    const float ALIGN_FACTOR = 0.02f; // Factor controlling alignment behavior
     const float COHESION_FACTOR = 0.002f; // Factor controlling cohesion behavior
 
     // Seed the random number generator with current time
@@ -30,8 +30,8 @@ int main() {
     Boid* boids[NUM_BOIDS];
 
     //Variabels to use in the main for loops 
-    float moveX = 0; //used in Seperation()
-    float moveY = 0; //used in Seperation()
+    int moveX = 0; //used in Seperation()
+    int moveY = 0; //used in Seperation()
     float avgXVel = 0; //used in Alignment()
     float avgYVel = 0; //used in Alignment()
     float avgXPos = 0; //used in Cohesion()
@@ -93,14 +93,14 @@ int main() {
                     }
 
                     // Calculate for alignment
-                    if (distance < (VISUAL_RANGE - 20)) {
+                    if (distance < (VISUAL_RANGE - 30)) {
                         avgXVel += boids[j]->GetXVel();
                         avgYVel += boids[j]->GetYVel();
                         numAlignmentNeighbors++;
                     }
 
                     // Calculate for cohesion
-                    if (distance < (VISUAL_RANGE + 20)) {
+                    if (distance < (VISUAL_RANGE )) {
                         avgXPos += boids[j]->GetXPos();
                         avgYPos += boids[j]->GetYPos();
                         numCohesionNeighbors++;
