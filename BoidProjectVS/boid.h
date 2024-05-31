@@ -32,7 +32,7 @@ public:
     void ApplySeparation(float avoidFactor, int moveX, int moveY);
 
     // Method to apply alignment behavior to match velocities with nearby boids
-    void ApplyAlignment(float alignFactor);
+    void ApplyAlignment(float alignFactor, float avgXVel, float avgYVel);
 
     // Method to apply cohesion behavior to move towards the center of nearby boids
     void ApplyCohesion(float cohesionFactor);
@@ -65,7 +65,7 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
 void Boid::Update() {
     // Constants defining turning behavior near boundaries and random steering
     const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
-    const float randomTurnFactor = 0.5f;   // Random steering strength
+    const float randomTurnFactor = 0.9f;   // Random steering strength
     bool randomTurn = true; // Flag to enable random steering
 
     // Gradually adjust velocity when near boundaries
@@ -150,8 +150,9 @@ void Boid::ApplySeparation(float avoidFactor, int moveX, int moveY) {
 }
 
 // Method to apply alignment behavior to match velocities with nearby boids
-void Boid::ApplyAlignment(float alignFactor) {
-    
+void Boid::ApplyAlignment(float alignFactor, float avgXVel, float avgYVel) {
+    this->xvel += (avgXVel - this->xvel) * alignFactor;
+    this->yvel += (avgYVel - this->yvel) * alignFactor;
 }
 
 // Method to apply cohesion behavior to move towards the center of nearby boids
