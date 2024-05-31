@@ -1,7 +1,9 @@
 #include <raylib.h> // Include Raylib library for graphics
+#include <raymath.h>
 #include <cstdlib> // Include standard library for various utilities
 #include <ctime> // Include time library for random number generation based on time
 #include "boid.h" // Include user-defined Boid class header file
+#include <iostream>
 
 #define NUM_BOIDS 250 // Define the number of boids in the simulation
 
@@ -16,7 +18,8 @@ int main() {
 
     // Define parameters for boid behavior
     const int VISUAL_RANGE = 100; // Range within which boids interact with each other
-    const float AVOID_FACTOR = 0.03f; // Factor controlling avoidance behavior
+    const int PROTECTED_RANGE = 20;
+    const float AVOID_FACTOR = 0.05f; // Factor controlling avoidance behavior
     const float ALIGN_FACTOR = 0.02f; // Factor controlling alignment behavior
     const float COHESION_FACTOR = 0.005f; // Factor controlling cohesion behavior
 
@@ -34,6 +37,11 @@ int main() {
     float avgXPos = 0; //used in Cohesion()
     float avgYPos = 0; //used in Cohesion()
     int numNeighbors = 0; //used in Alignment() and Cohesion()
+
+    //used in main loopt calculate the distance between two boids
+    Vector2 pos1;
+    Vector2 pos2;
+    float distance; 
 
     // Initialize boids with random positions and velocities
     for (int i = 0; i < NUM_BOIDS; i++) {
@@ -61,16 +69,35 @@ int main() {
         ClearBackground(backgroundColor); // Clear the screen with the background color
 
         // Loop through all boids in the simulation
-        for (int i = 0; i < NUM_BOIDS; i++) {
+        for (int i = 0; i < NUM_BOIDS; i++) { //this method will be faster, O(N^2) is better than previous method
+
+            moveX = 0; //used in Seperation()
+            moveY = 0; //used in Seperation()
+            avgXVel = 0; //used in Alignment()
+            avgYVel = 0; //used in Alignment()
+            avgXPos = 0; //used in Cohesion()
+            avgYPos = 0; //used in Cohesion()
+            numNeighbors = 0; //used in Alignment() and Cohesion()
 
             for (int j = 0; j < NUM_BOIDS; j++) { //this method will be faster, O(N^2) is better than previous method
                 //calculate the distance that the boid[i] is from the boid[j]
+                pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
+                pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
+                distance = Vector2Distance(pos1, pos2);
+
+                //check if boid is in "Protected Range"
+                if (distance < PROTECTED_RANGE) {
+                    
+                    moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
+                    moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
+                }
                 
+
+                
+
+                
+
                 //accumalate necessary variables and etc.
-
-                //check if boid is in "Visual Range"
-
-
             }
 
             // Old code to mark the special visual ranges per type of method call
@@ -79,7 +106,7 @@ int main() {
             boids[i]->ApplyAlignment(boids, NUM_BOIDS, ALIGN_FACTOR, VISUAL_RANGE - 20);
             boids[i]->ApplyCohesion(boids, NUM_BOIDS, COHESION_FACTOR, VISUAL_RANGE + 20);
             */
-            
+            //boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
 
             // Update position and velocity of the current boid
             boids[i]->Update();
