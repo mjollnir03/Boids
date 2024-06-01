@@ -2,6 +2,7 @@
 
 #include <cmath> // Include math functions
 #include "functions.h" // Include user-defined functions
+#include <iostream>
 
 // Constants defining boid properties
 const float BOID_SIZE = 3.5f; // Size of the boid
@@ -63,23 +64,39 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
 }
 
 void Boid::ApplyVelocity() {
-    //add some acceleration to the velocities 
-    this->xvel += this->xvel * 0.01f;
-    this->yvel += this->yvel * 0.01f;
-
     // Ensure velocities stay within bounds
     this->xvel = Clamp(this->xvel, -MAX_VELOCITY, MAX_VELOCITY);
     this->yvel = Clamp(this->yvel, -MAX_VELOCITY, MAX_VELOCITY);
 
     // Update position based on velocity
-    this->xpos += this->xvel;
-    this->ypos += this->yvel;
+    this->xpos += static_cast<int>(this->xvel);
+    this->ypos += static_cast<int>(this->yvel);
 
 }
 
 Vector2 Boid::GetDirection() {
+    int XCoordinate = 0; //480
+    int YCoordinate = 0; //270
 
-    return { 3.0, 3.0 };
+    for (int y = 0; y <= 4; y++) { 
+
+        if (this->GetYPos() > y * 270 && this->GetYPos() < (y + 1) * 270) {
+            YCoordinate = y;
+            for (int x = 0; x <= 4; x++) {
+                if (this->GetXPos() > x * 480 && this->GetXPos() < (x + 1) * 480) {
+                    XCoordinate = x;
+                    break;
+                }
+                
+            }
+        }
+    }
+
+    //std::cout << "Current X: " << XCoordinate << std::endl << "Current Y: " << YCoordinate << std::endl;
+
+
+
+    return { 0.0f, 0.0f };
 }
 
 bool Boid::CheckBoundaryCollosion() {
@@ -88,19 +105,19 @@ bool Boid::CheckBoundaryCollosion() {
     bool boundryHit = false; 
 
     // Gradually adjust velocity when near boundaries
-    if (this->xpos < 20) {
+    if (this->xpos < 0) {
         this->xvel += boundaryTurnFactor; // Turn right
         boundryHit = true;
     }
-    else if (this->xpos > GetScreenWidth() - 20) {
+    else if (this->xpos > GetScreenWidth()) {
         this->xvel -= boundaryTurnFactor; // Turn left
         boundryHit = true;
     }
-    if (this->ypos < 20) {
+    if (this->ypos < 0) {
         this->yvel += boundaryTurnFactor; // Turn down
         boundryHit = true;
     }
-    else if (this->ypos > GetScreenHeight() - 20) {
+    else if (this->ypos > GetScreenHeight()) {
         this->yvel -= boundaryTurnFactor; // Turn up
         boundryHit = true;
     }
@@ -121,6 +138,16 @@ void Boid::Update() { //follow grid idea
 
     //check boundry collosion
     if (this->CheckBoundaryCollosion()) { return; } //base case
+
+    //below is what caused the generic directions for the boids
+    //instead I will implement a grid that will cause the boids
+    //to go in certain directions
+    Vector2 newVelocities = this->GetDirection();
+    
+    //set new xvel and yvel
+    //this->SetXVel(newVelocities.x);
+    //this->SetYVel(newVelocities.y);
+
 
     this->ApplyVelocity();
     
