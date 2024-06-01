@@ -5,15 +5,14 @@
 #include <iostream>
 
 // Constants defining boid properties
-const float BOID_SIZE = 3.5f; // Size of the boid
+const float BOID_SIZE = 2.5f; // Size of the boid
 const Color BOID_COLOR = RAYWHITE; // Color of the boid
 const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
-const static Vector2 GRIDKEY[4][4] = {
-    { {0.2f, 0.0f}, {-0.0f, 0.2f}, {0.0f, 0.2f}, {-0.2f, 0.0f} },
-    { {0.2f, 0.2f}, {0.2f, 0.0f}, {0.2f, 0.2f}, {-0.2f, 0.2f} },
-    { {0.2f, -0.2f}, {-0.2f, -0.2f}, {0.0f, 0.2f}, {0.0f, 0.0f} },
-    { {0.2f, 0.0f}, {0.0f, -0.2f}, {-0.2f, 0.0f}, {-0.2f, 0.0f} }
+const static Vector2 DIRECTION_CHOICES[8] = {
+    {0.5f, 0.0f}, {-0.5f, 0.0f}, {0.0f, -0.5f}, {0.0f, 0.5f},
+    {-0.5f, -0.5f}, {0.5f, -0.5f}, {-0.5f, 0.5f}, {0.5f, 0.5f}
 };
+
 
 // Class definition for a boid
 class Boid {
@@ -81,50 +80,58 @@ void Boid::ApplyVelocity() {
 }
 
 Vector2 Boid::GetDirection() {
-    int XCoordinate = 0; //480
-    int YCoordinate = 0; //270
+    /*
+    LEGEND:
+    DIRECTION_CHOICES[0] = go right
+    DIRECTION_CHOICES[1] = go left
+    DIRECTION_CHOICES[2] = go up
+    DIRECTION_CHOICES[3] = go down
+    DIRECTION_CHOICES[4] = go up-left
+    DIRECTION_CHOICES[5] = go up-right
+    DIRECTION_CHOICES[6] = go down-left
+    DIRECTION_CHOICES[7] = go down-right
+    */
     Vector2 direction = { 0.0f, 0.0f };
 
-    for (int y = 0; y <= 4; y++) { 
+    // Create a random device and random number generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-        if (this->GetYPos() > y * 270 && this->GetYPos() < (y + 1) * 270) {
-            YCoordinate = y;
-            for (int x = 0; x <= 4; x++) {
-                if (this->GetXPos() > x * 480 && this->GetXPos() < (x + 1) * 480) {
-                    XCoordinate = x;
-                    break;
-                }
-                
-            }
-        }
+    // Define a distribution for a 50% chance
+    std::uniform_int_distribution<> dis(0, 1);
+    int randomChance = dis(gen);
+
+    if (randomChance == 1) {
+        // Define the distribution range for indices (0 to 7)
+        std::uniform_int_distribution<> directionDis(0, 7);
+        // Choose a random index from 0 to 7
+        int randomIndex = directionDis(gen);
+        // Set the direction to the chosen value from DIRECTION_CHOICES
+        direction = DIRECTION_CHOICES[randomIndex];
     }
-
-    //std::cout << "Current X: " << XCoordinate << std::endl << "Current Y: " << YCoordinate << std::endl;
-    direction = GRIDKEY[XCoordinate][YCoordinate];
-
 
     return direction;
 }
 
 bool Boid::CheckBoundaryCollosion() {
     // Constants defining turning behavior near boundaries and random steering
-    const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
+    const float boundaryTurnFactor = 0.2f; // Turning speed near boundaries
     bool boundryHit = false; 
 
     // Gradually adjust velocity when near boundaries
-    if (this->xpos < 0) {
+    if (this->xpos < 100) {
         this->xvel += boundaryTurnFactor; // Turn right
         boundryHit = true;
     }
-    else if (this->xpos > GetScreenWidth()) {
+    else if (this->xpos > GetScreenWidth() - 100) {
         this->xvel -= boundaryTurnFactor; // Turn left
         boundryHit = true;
     }
-    if (this->ypos < 0) {
+    if (this->ypos < 100) {
         this->yvel += boundaryTurnFactor; // Turn down
         boundryHit = true;
     }
-    else if (this->ypos > GetScreenHeight()) {
+    else if (this->ypos > GetScreenHeight() - 100) {
         this->yvel -= boundaryTurnFactor; // Turn up
         boundryHit = true;
     }
@@ -137,33 +144,31 @@ bool Boid::CheckBoundaryCollosion() {
 }
 
 
-// WORK IN PROGRESS
-void Boid::Update() { //follow grid idea
+void Boid::Update() {
+    // Check boundary collision
+    if (this->CheckBoundaryCollosion()) {
+        return;
+    } // base case
 
-    //variables
-
-
-    //check boundry collosion
-    if (this->CheckBoundaryCollosion()) { return; } //base case
-
-    //below is what caused the generic directions for the boids
-    //instead I will implement a grid that will cause the boids
-    //to go in certain directions
+    // Below is what caused the generic directions for the boids
+    // instead I will implement a grid that will cause the boids
+    // to go in certain directions
     Vector2 newVelocities = this->GetDirection();
-    
-    //set new xvel and yvel
-    //this->SetXVel(newVelocities.x);
-    //this->SetYVel(newVelocities.y);
+
     this->xvel += newVelocities.y;
     this->yvel += newVelocities.x;
 
+    // Accelerate velocity by 15% if within the range of -1 and 1
+    if (this->xvel > -1.0f && this->xvel < 1.0f) {
+        this->xvel *= 1.15f;
+    }
+    if (this->yvel > -1.0f && this->yvel < 1.0f) {
+        this->yvel *= 1.15f;
+    }
 
     this->ApplyVelocity();
-    
-
-
-
 }
+
 
 
 // Method to draw the boid
