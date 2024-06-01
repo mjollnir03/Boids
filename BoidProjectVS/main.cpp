@@ -3,16 +3,17 @@
 #include <raymath.h>
 #include <cstdlib> // Include standard library for various utilities
 #include <ctime> // Include time library for random number generation based on time
+#include <random>
 #include "boid.h" // Include user-defined Boid class header file
 
 
-#define NUM_BOIDS 350 // Define the number of boids in the simulation
+#define NUM_BOIDS 500 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
     Color backgroundColor = BLACK;
     Color boidColor = RAYWHITE;
-    
+
 
 
     // Define screen dimensions
@@ -21,10 +22,10 @@ int main() {
 
     // Define parameters for boid behavior
     const int VISUAL_RANGE = 100; // Range within which boids interact with each other
-    const int PROTECTED_RANGE = 20;
+    const int PROTECTED_RANGE = 10;
     const float AVOID_FACTOR = 0.05f; // Factor controlling avoidance behavior
-    const float ALIGN_FACTOR = 0.02f; // Factor controlling alignment behavior
-    const float COHESION_FACTOR = 0.002f; // Factor controlling cohesion behavior
+    const float ALIGN_FACTOR = 0.05f; // Factor controlling alignment behavior
+    const float COHESION_FACTOR = 0.0005f; // Factor controlling cohesion behavior
 
     // Seed the random number generator with current time
     srand(static_cast<unsigned>(time(0)));
@@ -44,7 +45,7 @@ int main() {
     //used in main loopt calculate the distance between two boids
     Vector2 pos1;
     Vector2 pos2;
-    float distance; 
+    float distance;
 
     // Initialize boids with random positions and velocities
     for (int i = 0; i < NUM_BOIDS; i++) {
@@ -52,9 +53,9 @@ int main() {
         int centerX = rand() % screenWidth;
         int centerY = rand() % screenHeight;
 
-        // Generate random initial velocities within a range
-        float velocityX = 2.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (6.0f - 2.0f)));
-        float velocityY = 2.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (6.0f - 2.0f)));
+        // Generate random initial velocities within a range of -5 to 5
+        float velocityX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX / 10.0f) - 5.0f;
+        float velocityY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX / 10.0f) - 5.0f;
 
         // Create a new boid with random initial position and velocity, and store its pointer
         boids[i] = new Boid(centerX, centerY, velocityX, velocityY);
@@ -79,8 +80,8 @@ int main() {
             avgYVel = 0; //used in Alignment()
             avgXPos = 0; //used in Cohesion()
             avgYPos = 0; //used in Cohesion()
-            int numAlignmentNeighbors = 0; //used in Alignment()
-            int numCohesionNeighbors = 0; //used in Cohesion()
+            numNeighbors = 0; //used in Alignment() and Cohesion()
+            
 
             for (int j = 0; j < NUM_BOIDS; j++) {
 
@@ -95,35 +96,29 @@ int main() {
                     moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
                 }
 
-                // Calculate for alignment
-                if (distance < (VISUAL_RANGE - 50)) {
+                if (distance < VISUAL_RANGE) {
                     avgXVel += boids[j]->GetXVel();
                     avgYVel += boids[j]->GetYVel();
-                    numAlignmentNeighbors++;
-                }
-
-                // Calculate for cohesion
-                if (distance < (VISUAL_RANGE - 50)) {
                     avgXPos += boids[j]->GetXPos();
                     avgYPos += boids[j]->GetYPos();
-                    numCohesionNeighbors++;
+                    numNeighbors++;
                 }
-            }
-            
 
-            if (numAlignmentNeighbors > 0) {
-                avgXVel /= numAlignmentNeighbors;
-                avgYVel /= numAlignmentNeighbors;
+               
             }
 
-            if (numCohesionNeighbors > 0) {
-                avgXPos /= numCohesionNeighbors;
-                avgYPos /= numCohesionNeighbors;
+            if (numNeighbors > 0) {
+                avgXVel /= numNeighbors;
+                avgYVel /= numNeighbors;
+                avgXPos /= numNeighbors;
+                avgYPos /= numNeighbors;
             }
+
+    
 
             boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
-            //boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
-            //boids[i]->ApplyCohesion(COHESION_FACTOR, avgXPos, avgYPos);
+            boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
+            boids[i]->ApplyCohesion(COHESION_FACTOR, avgXPos, avgYPos);
 
             // Update position and velocity of the current boid
             boids[i]->Update();
