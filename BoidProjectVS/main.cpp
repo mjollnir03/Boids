@@ -1,16 +1,24 @@
+#include <iostream>
 #include <raylib.h> // Include Raylib library for graphics
 #include <raymath.h>
 #include <cstdlib> // Include standard library for various utilities
 #include <ctime> // Include time library for random number generation based on time
 #include "boid.h" // Include user-defined Boid class header file
-#include <iostream>
 
-#define NUM_BOIDS 350 // Define the number of boids in the simulation
+
+#define NUM_BOIDS 1 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
     Color backgroundColor = BLACK;
     Color boidColor = RAYWHITE;
+    const static Vector2 GRIDKEY[4][4] = { 
+    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
+    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
+    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
+    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} }
+    };
+
 
     // Define screen dimensions
     const int screenWidth = 1920;
@@ -59,7 +67,7 @@ int main() {
 
     // Initialize the window with specified dimensions and title
     InitWindow(screenWidth, screenHeight, "Boids - By Ellmaer Ranjber");
-    SetTargetFPS(60); // Set target frames per second for rendering
+    SetTargetFPS(10); // Set target frames per second for rendering
     //HideCursor(); // Hide cursor during simulation (optional)
 
     // Main simulation loop
@@ -80,33 +88,33 @@ int main() {
             int numCohesionNeighbors = 0; //used in Cohesion()
 
             for (int j = 0; j < NUM_BOIDS; j++) {
-                if (i != j) { // Ensure a boid does not compare with itself
-                    // Calculate the distance that the boid[i] is from the boid[j]
-                    pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
-                    pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
-                    distance = Vector2Distance(pos1, pos2);
 
-                    // Check if boid is in "Protected Range"
-                    if (distance < PROTECTED_RANGE) {
-                        moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
-                        moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
-                    }
+                // Calculate the distance that the boid[i] is from the boid[j]
+                pos1 = { static_cast<float>(boids[i]->GetXPos()), static_cast<float>(boids[i]->GetYPos()) };
+                pos2 = { static_cast<float>(boids[j]->GetXPos()), static_cast<float>(boids[j]->GetYPos()) };
+                distance = Vector2Distance(pos1, pos2);
 
-                    // Calculate for alignment
-                    if (distance < (VISUAL_RANGE - 30)) {
-                        avgXVel += boids[j]->GetXVel();
-                        avgYVel += boids[j]->GetYVel();
-                        numAlignmentNeighbors++;
-                    }
+                // Check if boid is in "Protected Range"
+                if (distance < PROTECTED_RANGE) {
+                    moveX += boids[i]->GetXPos() - boids[j]->GetXPos();
+                    moveY += boids[i]->GetYPos() - boids[j]->GetYPos();
+                }
 
-                    // Calculate for cohesion
-                    if (distance < (VISUAL_RANGE )) {
-                        avgXPos += boids[j]->GetXPos();
-                        avgYPos += boids[j]->GetYPos();
-                        numCohesionNeighbors++;
-                    }
+                // Calculate for alignment
+                if (distance < (VISUAL_RANGE - 30)) {
+                    avgXVel += boids[j]->GetXVel();
+                    avgYVel += boids[j]->GetYVel();
+                    numAlignmentNeighbors++;
+                }
+
+                // Calculate for cohesion
+                if (distance < (VISUAL_RANGE)) {
+                    avgXPos += boids[j]->GetXPos();
+                    avgYPos += boids[j]->GetYPos();
+                    numCohesionNeighbors++;
                 }
             }
+            
 
             if (numAlignmentNeighbors > 0) {
                 avgXVel /= numAlignmentNeighbors;
