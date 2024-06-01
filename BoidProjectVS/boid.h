@@ -8,6 +8,12 @@
 const float BOID_SIZE = 3.5f; // Size of the boid
 const Color BOID_COLOR = RAYWHITE; // Color of the boid
 const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
+const static Vector2 GRIDKEY[4][4] = {
+    { {0.2f, 0.0f}, {-0.0f, 0.2f}, {0.0f, 0.2f}, {-0.2f, 0.0f} },
+    { {0.2f, 0.2f}, {0.2f, 0.0f}, {0.2f, 0.2f}, {-0.2f, 0.2f} },
+    { {0.2f, -0.2f}, {-0.2f, -0.2f}, {0.0f, 0.2f}, {0.0f, 0.0f} },
+    { {0.2f, 0.0f}, {0.0f, -0.2f}, {-0.2f, 0.0f}, {-0.2f, 0.0f} }
+};
 
 // Class definition for a boid
 class Boid {
@@ -77,6 +83,7 @@ void Boid::ApplyVelocity() {
 Vector2 Boid::GetDirection() {
     int XCoordinate = 0; //480
     int YCoordinate = 0; //270
+    Vector2 direction = { 0.0f, 0.0f };
 
     for (int y = 0; y <= 4; y++) { 
 
@@ -93,15 +100,15 @@ Vector2 Boid::GetDirection() {
     }
 
     //std::cout << "Current X: " << XCoordinate << std::endl << "Current Y: " << YCoordinate << std::endl;
+    direction = GRIDKEY[XCoordinate][YCoordinate];
 
 
-
-    return { 0.0f, 0.0f };
+    return direction;
 }
 
 bool Boid::CheckBoundaryCollosion() {
     // Constants defining turning behavior near boundaries and random steering
-    const float boundaryTurnFactor = 0.3f; // Turning speed near boundaries
+    const float boundaryTurnFactor = 1.9f; // Turning speed near boundaries
     bool boundryHit = false; 
 
     // Gradually adjust velocity when near boundaries
@@ -147,6 +154,8 @@ void Boid::Update() { //follow grid idea
     //set new xvel and yvel
     //this->SetXVel(newVelocities.x);
     //this->SetYVel(newVelocities.y);
+    this->xvel += newVelocities.y;
+    this->yvel += newVelocities.x;
 
 
     this->ApplyVelocity();
@@ -161,7 +170,7 @@ void Boid::Update() { //follow grid idea
 void Boid::DrawBoid() {
     // Draw the boid as a circle at its current position
     DrawCircle(this->xpos, this->ypos, BOID_SIZE, BOID_COLOR);
-    DrawGrid();
+    //DrawGrid();
     
 }
 

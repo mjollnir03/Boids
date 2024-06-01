@@ -6,18 +6,13 @@
 #include "boid.h" // Include user-defined Boid class header file
 
 
-#define NUM_BOIDS 1 // Define the number of boids in the simulation
+#define NUM_BOIDS 350 // Define the number of boids in the simulation
 
 int main() {
     // Define colors for background and boids
     Color backgroundColor = BLACK;
     Color boidColor = RAYWHITE;
-    const static Vector2 GRIDKEY[4][4] = { 
-    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
-    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
-    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} },
-    { {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f} }
-    };
+    
 
 
     // Define screen dimensions
@@ -67,7 +62,7 @@ int main() {
 
     // Initialize the window with specified dimensions and title
     InitWindow(screenWidth, screenHeight, "Boids - By Ellmaer Ranjber");
-    SetTargetFPS(10); // Set target frames per second for rendering
+    SetTargetFPS(60); // Set target frames per second for rendering
     //HideCursor(); // Hide cursor during simulation (optional)
 
     // Main simulation loop
@@ -101,14 +96,14 @@ int main() {
                 }
 
                 // Calculate for alignment
-                if (distance < (VISUAL_RANGE - 30)) {
+                if (distance < (VISUAL_RANGE - 50)) {
                     avgXVel += boids[j]->GetXVel();
                     avgYVel += boids[j]->GetYVel();
                     numAlignmentNeighbors++;
                 }
 
                 // Calculate for cohesion
-                if (distance < (VISUAL_RANGE)) {
+                if (distance < (VISUAL_RANGE - 50)) {
                     avgXPos += boids[j]->GetXPos();
                     avgYPos += boids[j]->GetYPos();
                     numCohesionNeighbors++;
@@ -127,8 +122,8 @@ int main() {
             }
 
             boids[i]->ApplySeparation(AVOID_FACTOR, moveX, moveY);
-            boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
-            boids[i]->ApplyCohesion(COHESION_FACTOR, avgXPos, avgYPos);
+            //boids[i]->ApplyAlignment(ALIGN_FACTOR, avgXVel, avgYVel);
+            //boids[i]->ApplyCohesion(COHESION_FACTOR, avgXPos, avgYPos);
 
             // Update position and velocity of the current boid
             boids[i]->Update();
