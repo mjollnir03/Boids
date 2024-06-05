@@ -16,14 +16,3 @@ T Clamp(T value, T min, T max) {
     }
 }
 
-
-void DrawGrid() { // temporary function just to help visualize the point of the grid system I am creating
-    for (int y = 0; y < 5; y++) { //values of x and y flipped so the grid is drawn horizontally
-        for (int x = 0; x < 5; x++) { //instead of vertically
-            int centerX = x * 480;
-            int centerY = y * 270;
-            DrawCircle(centerX, centerY, 15, GREEN);
-        }
-    }
-
-}
