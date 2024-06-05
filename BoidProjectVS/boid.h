@@ -2,17 +2,17 @@
 
 #include <cmath> // Include math functions
 #include "functions.h" // Include user-defined functions
-#include <iostream>
+
 
 // Constants defining boid properties
-const float BOID_SIZE = 2.5f; // Size of the boid
-const Color BOID_COLOR = RAYWHITE; // Color of the boid
-const float MAX_VELOCITY = 5.0f; // Maximum velocity of the boid
-const static Vector2 DIRECTION_CHOICES[8] = {
-    {0.5f, 0.0f}, {-0.5f, 0.0f}, {0.0f, -0.5f}, {0.0f, 0.5f},
-    {-0.5f, -0.5f}, {0.5f, -0.5f}, {-0.5f, 0.5f}, {0.5f, 0.5f}
-};
+const float BOID_SIZE = 2.0f; // Size of the boid
+const Color BOID_COLOR = LIGHTGRAY; // Color of the boid
+const float MAX_VELOCITY = 4.0f; // Maximum velocity of the boid
 
+const static Vector2 DIRECTION_CHOICES[8] = {
+    {0.3f, 0.0f}, {-0.3f, 0.0f}, {0.0f, -0.3f}, {0.0f, 0.3f},
+    {-0.3f, -0.3f}, {0.3f, -0.3f}, {-0.3f, 0.3f}, {0.3f, 0.3f}
+};
 
 // Class definition for a boid
 class Boid {
@@ -21,9 +21,10 @@ private:
     int ypos; // Current y-position of the boid
     float xvel; // Current x-velocity of the boid
     float yvel; // Current y-velocity of the boid
+
     Vector2 GetDirection(); // Returns x and y values to be applied to xvel and yvel
-    void ApplyVelocity();
-    bool CheckBoundaryCollosion();
+    void ApplyVelocity(); // Updates position based on velocity, ensuring it stays within bounds
+    bool CheckBoundaryCollision(); // Checks and handles boundary collisions
 
 public:
     // Constructor with parameters for initial position and velocity
@@ -68,6 +69,7 @@ Boid::Boid(int x, int y, float xvel, float yvel) {
     this->yvel = yvel;
 }
 
+// Method to apply the current velocity to update the position
 void Boid::ApplyVelocity() {
     // Ensure velocities stay within bounds
     this->xvel = Clamp(this->xvel, -MAX_VELOCITY, MAX_VELOCITY);
@@ -76,9 +78,9 @@ void Boid::ApplyVelocity() {
     // Update position based on velocity
     this->xpos += static_cast<int>(this->xvel);
     this->ypos += static_cast<int>(this->yvel);
-
 }
 
+// Method to determine the direction of movement based on random chance
 Vector2 Boid::GetDirection() {
     /*
     LEGEND:
@@ -113,42 +115,45 @@ Vector2 Boid::GetDirection() {
     return direction;
 }
 
-bool Boid::CheckBoundaryCollosion() {
-    // Constants defining turning behavior near boundaries and random steering
+// Method to check and handle collisions with the boundaries of the screen
+bool Boid::CheckBoundaryCollision() {
+    // Constants defining turning behavior near boundaries
     const float boundaryTurnFactor = 0.2f; // Turning speed near boundaries
-    bool boundryHit = false; 
+    bool boundaryHit = false;
 
     // Gradually adjust velocity when near boundaries
     if (this->xpos < 100) {
         this->xvel += boundaryTurnFactor; // Turn right
-        boundryHit = true;
+        this->yvel += 0.1f;
+        boundaryHit = true;
     }
     else if (this->xpos > GetScreenWidth() - 100) {
         this->xvel -= boundaryTurnFactor; // Turn left
-        boundryHit = true;
+        this->yvel += 0.1f;
+        boundaryHit = true;
     }
     if (this->ypos < 100) {
         this->yvel += boundaryTurnFactor; // Turn down
-        boundryHit = true;
+        boundaryHit = true;
     }
     else if (this->ypos > GetScreenHeight() - 100) {
         this->yvel -= boundaryTurnFactor; // Turn up
-        boundryHit = true;
+        boundaryHit = true;
     }
 
-    if (boundryHit) {
+    if (boundaryHit) {
         this->ApplyVelocity();
     }
 
-    return boundryHit;
+    return boundaryHit;
 }
 
-
+// Method to update the boid's position and velocity
 void Boid::Update() {
     // Check boundary collision
-    if (this->CheckBoundaryCollosion()) {
+    if (this->CheckBoundaryCollision()) {
         return;
-    } // base case
+    }
 
     // Below is what caused the generic directions for the boids
     // instead I will implement a grid that will cause the boids
@@ -169,13 +174,10 @@ void Boid::Update() {
     this->ApplyVelocity();
 }
 
-
-
 // Method to draw the boid
 void Boid::DrawBoid() {
     // Draw the boid as a circle at its current position
     DrawCircle(this->xpos, this->ypos, BOID_SIZE, BOID_COLOR);
-    //DrawGrid();
     
 }
 
