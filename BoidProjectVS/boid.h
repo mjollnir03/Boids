@@ -5,7 +5,7 @@
 
 
 // Constants defining boid properties
-const float BOID_SIZE = 2.0f; // Size of the boid
+const float BOID_SIZE = 2.5f; // Size of the boid
 const Color BOID_COLOR = LIGHTGRAY; // Color of the boid
 const float MAX_VELOCITY = 4.0f; // Maximum velocity of the boid
 
