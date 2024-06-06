@@ -122,21 +122,21 @@ bool Boid::CheckBoundaryCollision() {
     bool boundaryHit = false;
 
     // Gradually adjust velocity when near boundaries
-    if (this->xpos < 100) {
+    if (this->xpos < 50) {
         this->xvel += boundaryTurnFactor; // Turn right
         this->yvel += 0.1f;
         boundaryHit = true;
     }
-    else if (this->xpos > GetScreenWidth() - 100) {
+    else if (this->xpos > GetScreenWidth() - 50) {
         this->xvel -= boundaryTurnFactor; // Turn left
         this->yvel += 0.1f;
         boundaryHit = true;
     }
-    if (this->ypos < 100) {
+    if (this->ypos < 50) {
         this->yvel += boundaryTurnFactor; // Turn down
         boundaryHit = true;
     }
-    else if (this->ypos > GetScreenHeight() - 100) {
+    else if (this->ypos > GetScreenHeight() - 50) {
         this->yvel -= boundaryTurnFactor; // Turn up
         boundaryHit = true;
     }
