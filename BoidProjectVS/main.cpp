@@ -35,7 +35,7 @@ int main() {
     // HideCursor(); // Hide cursor during simulation (optional)
 
     // Play the Raylib screen intro
-    PlayRaylibLogoAnimation(screenWidth, screenHeight);
+    //PlayRaylibLogoAnimation(screenWidth, screenHeight);
 
     // Main simulation loop
     while (WindowShouldClose() == false) {
