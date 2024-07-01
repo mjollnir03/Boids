@@ -1,9 +1,13 @@
 # Boids
 # About 
 - This project ...
-# Add Demos
+# Demos
   - No Rules:
+    - <img src="https://github.com/mjollnir03/Boids/assets/98365394/d263f626-32f2-411d-b1af-ebac33cd67bf" width="90%"/>
+
+
   - Seperation:
+    - <img src="https://github.com/mjollnir03/Boids/assets/98365394/389821e1-551b-4eef-ace1-76aafcb1dba7" width="90%"/>
   - Alignment:
   - Cohesion:
   - Previous Version:
