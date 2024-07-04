@@ -44,4 +44,14 @@
 
 ### Executable Directory (Windows Only)
 - For those interested in running the simulation on a Windows system, the executable can be found in the following directory:
+  
+**ExecutableFilesDirectory/**
 
+└── `BoidProjectVS.exe`
+
+└── `raylib.dll`
+
+└── `BoidProjectVS.pdb`
+
+
+Ensure you navigate through the above directory path to locate and run the `BoidProjectVS.exe` file.
