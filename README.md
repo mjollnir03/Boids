@@ -38,7 +38,7 @@
 ## Conclusion
 - This Boids project has been an exciting journey into the world of artificial life and emergent behavior. Implementing the flocking behavior of birds through simple rules has provided valuable insights into how complex patterns can arise from basic interactions. While there are still improvements to be made, such as optimizing performance and addressing edge cases, the current version effectively demonstrates the core principles of separation, alignment, and cohesion.
 
-- Future enhancements could include adding obstacles for the boids to navigate around, experimenting with different rule parameters to observe varied flocking behaviors, and perhaps integrating more advanced rendering techniques for a visually richer experience.
+- Future enhancements would primarily focus on improving the efficiency of the algorithm that detects boids within their visual range. I explored different methods, and the most effective approaches appear to be multithreading or implementing the algorithm as a shader on the graphics card. Both methods would achieve the same outcome.
 
 - Overall, this project has been both educational and enjoyable. I look forward to continuing to refine and expand on this work, and I encourage others to explore the fascinating world of Boids.
 
