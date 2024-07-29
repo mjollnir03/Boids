@@ -43,15 +43,38 @@
 - Overall, this project has been both educational and enjoyable. I look forward to continuing to refine and expand on this work, and I encourage others to explore the fascinating world of Boids.
 
 ### Executable Directory (Windows Only)
-- For those interested in running the simulation on a Windows system, the executable can be found in the following directory:
-  
-**ExecutableFilesDirectory/**
 
-└── `BoidProjectVS.exe`
+For those interested in running the simulation on a Windows system, please follow these steps:
 
-└── `raylib.dll`
+1. **Download and Extract**:
+    - Download the official release file: [Boids.zip](https://github.com/mjollnir03/Boids/releases/tag/Latest)
+    - Extract the contents into a separate folder.
 
-└── `BoidProjectVS.pdb`
+2. **Running the Application**:
+    - Navigate to the extracted folder.
+    - Run `BoidProjectVS.exe` by either:
+        - Double-clicking on the file.
+        - Using the terminal: `./BoidProjectVS.exe`.
 
+### Alternative: Using an IDE
 
-Ensure you navigate through the above directory path to locate and run the `BoidProjectVS.exe` file.
+If you prefer to use an IDE, you can clone the repository and set it up with Visual Studio:
+
+1. **Clone the Repository**:
+    ```sh
+    git clone <repository-url>
+    ```
+
+2. **Install raylib with Vcpkg**:
+    - Follow the instructions [here](https://github.com/microsoft/vcpkg) to install Vcpkg.
+    - Install raylib using Vcpkg:
+      ```sh
+      vcpkg install raylib
+      ```
+
+3. **Open the Project**:
+    - Open the project in Visual Studio.
+    - Ensure that the raylib package is correctly referenced in your project settings.
+
+By following these steps, you can either run the executable directly or set up the project in an IDE for further development and customization.
+
